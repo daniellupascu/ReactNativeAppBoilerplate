@@ -2,9 +2,17 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { AppLoading } from "expo";
+import { combineReducers, createStore } from "redux";
+import { Provider } from "react-redux";
 
 import TabNavigation from "./navigation/BottomTabNavigation";
-import { useLoadFonts } from "./hooks/loadFonts.tsx";
+import { useLoadFonts } from "./hooks/loadFonts";
+import itemsReducer from "./store/reducers/itemsReducer";
+
+const rootReducer = combineReducers({
+  items: itemsReducer,
+});
+const store = createStore(rootReducer);
 
 export default function App() {
   const fontsLoaded = useLoadFonts();
@@ -13,9 +21,11 @@ export default function App() {
     return <AppLoading />;
   } else {
     return (
-      <NavigationContainer>
-        <TabNavigation />
-      </NavigationContainer>
+      <Provider store={store}>
+        <NavigationContainer>
+          <TabNavigation />
+        </NavigationContainer>
+      </Provider>
     );
   }
 }
